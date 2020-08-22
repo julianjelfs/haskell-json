@@ -1,0 +1,18 @@
+{
+  "one": "this is a string prop",
+  "two": 12346,
+  "three": 78956,
+  "four": {
+    "four_one": "this is a nested object",
+    "four_two": [
+      1,
+      2,
+      3
+    ]
+  },
+  "five": [
+    {
+      "five_one": "and this is nested in a list"
+    }
+  ]
+}
