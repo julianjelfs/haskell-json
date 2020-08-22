@@ -1,0 +1,16 @@
+{
+  "firstName": "Julian",
+  "lastName": "Jelfs",
+  "jobTitle": "Sort of programmer",
+  "address": {
+    "houseNumber": 121,
+    "streetName": "Elm Walk",
+    "town": "London",
+    "country": "UK"
+  },
+  "hobbies": [
+    "haskell shenanigans",
+    "guinea pig husbandry"
+  ],
+  "topSpeed": 140
+}

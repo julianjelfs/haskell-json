@@ -1,10 +1,15 @@
 module Main where
 
-import           JValueParser (parse, parseJson)
+import           Utils                          ( decode )
+import           Person                         ( Person )
+import           FromJValue                     ( fromJValue )
+import           JValueParser                   ( parse
+                                                , parseJson
+                                                )
 
 main :: IO ()
 main = do
-  input <- readFile ("./src/testdata.json")
-  case parse parseJson input of
-    Left err   -> fail (show err)
-    Right json -> putStrLn (show json)
+  input <- readFile "./src/person.json"
+  case decode $ parse parseJson input of
+    Left  err                -> fail err
+    Right (person :: Person) -> print person
