@@ -4,13 +4,9 @@ module Person
   )
 where
 
-import           FromJValue                     ( FromJValue
-                                                , fromJValue
-                                                )
-import           JValue                         ( JValue(..) )
-import           Utils                          ( mandatoryProp
-                                                , optionalProp
-                                                )
+import           FromJValue (FromJValue, fromJValue)
+import           JValue     (JValue (..))
+import           Utils      (mandatoryProp, optionalProp)
 
 data Address = Address
     { houseNumber :: Int
@@ -22,13 +18,13 @@ data Address = Address
     deriving Show
 
 instance FromJValue Address where
-  fromJValue val = do
-    houseNumber <- mandatoryProp val "houseNumber"
-    streetName  <- mandatoryProp val "streetName"
-    town        <- mandatoryProp val "town"
-    country     <- mandatoryProp val "country"
-    county      <- optionalProp val "county"
-    pure Address { .. }
+  fromJValue val =
+    Address
+        <$> mandatoryProp val "houseNumber"
+        <*> mandatoryProp val "streetName"
+        <*> mandatoryProp val "town"
+        <*> optionalProp val "county"
+        <*> mandatoryProp val "country"
 
 data Person = Person
     { firstName :: String
@@ -41,11 +37,11 @@ data Person = Person
     deriving Show
 
 instance FromJValue Person where
-  fromJValue val = do
-    firstName <- mandatoryProp val "firstName"
-    lastName  <- mandatoryProp val "lastName"
-    jobTitle  <- mandatoryProp val "jobTitle"
-    address   <- mandatoryProp val "address"
-    hobbies   <- mandatoryProp val "hobbies"
-    topSpeed  <- mandatoryProp val "topSpeed"
-    pure Person { .. }
+  fromJValue val =
+    Person
+      <$> mandatoryProp val "firstName"
+      <*> mandatoryProp val "lastName"
+      <*> mandatoryProp val "jobTitle"
+      <*> mandatoryProp val "address"
+      <*> mandatoryProp val "hobbies"
+      <*> mandatoryProp val "topSpeed"
