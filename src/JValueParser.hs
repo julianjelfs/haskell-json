@@ -7,23 +7,16 @@ import           Text.Parsec                   as P
 import           Text.ParserCombinators.Parsec (ParseError, Parser)
 
 parse :: Parser a -> String -> Either ParseError a
-parse p s = P.parse p [] s
+parse p = P.parse p []
 
 parseJson :: Parser JValue
-parseJson = spaces *> parseObjectOrArray <?> "JSON text"
-
-parseValue :: Parser JValue
-parseValue = parseObjectOrArray
-                <|> JString <$> parseString
-                <|> JBool <$> parseBool
-                <|> JNum <$> parseNum
-                <|> JNull <$ string "null"
+parseJson = parseObjectOrArray
 
 parseObjectOrArray :: Parser JValue
 parseObjectOrArray = JObject <$> parseObject <|> JArray <$> parseArray
 
 parseObject :: Parser (Map String JValue)
-parseObject = M.fromList <$> (parseCommaSepList '{' '}' parseKeyValue)
+parseObject = M.fromList <$> parseCommaSepList '{' '}' parseKeyValue
 
 parseArray :: Parser [JValue]
 parseArray = parseCommaSepList '[' ']' parseValue
@@ -31,14 +24,22 @@ parseArray = parseCommaSepList '[' ']' parseValue
 parseCommaSepList :: Char -> Char -> Parser a -> Parser [a]
 parseCommaSepList start end p =
     trim (char start) *>
-    sepBy p ((char ',' <* spaces))
+    sepBy p (char ',' <* spaces)
     <* trim (char end)
 
 parseKeyValue :: Parser (String, JValue)
-parseKeyValue = tuplify <$> parseString <*> separator <*> parseValue
-    where
-        tuplify k _ v = (k, v)
-        separator = trim (char ':')
+parseKeyValue = do
+    key <- parseString
+    _ <- trim (char ':')
+    val <- parseValue
+    pure (key, val)
+
+parseValue :: Parser JValue
+parseValue = parseObjectOrArray
+                <|> JString <$> parseString
+                <|> JBool <$> parseBool
+                <|> JNum <$> parseNum
+                <|> JNull <$ string "null"
 
 parseString :: Parser String
 parseString = char '"' *> manyTill anyChar (char '"')
